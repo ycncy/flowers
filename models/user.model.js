@@ -38,7 +38,7 @@ const userSchema = new mongoose.Schema(
     }
 );
 
-userSchema.pre("save", async (next) => {
+userSchema.pre("save", async function (next) {
     const salt = await bcrypt.genSalt();
     this.password = await bcrypt.hash(this.password, salt);
     next();
@@ -47,12 +47,13 @@ userSchema.pre("save", async (next) => {
 userSchema.statics.login = async function (username, password) {
     const user = await this.findOne({username});
     if (user) {
-        if (user.password === password) {
+        const auth = await bcrypt.compare(password, user.password);
+        if (auth) {
             return user;
         }
-        throw Error('incorrect password');
+        throw Error('Mauvais mot de passe');
     }
-    throw Error('incorrect email')
+    throw Error("Mauvais nom d'utilisateur");
 };
 
 const Users = mongoose.model("Users", userSchema);
