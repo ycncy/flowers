@@ -1,48 +1,54 @@
 const userModel = require('../models/user.model');
+const {genSalt} = require("bcrypt");
+const bcrypt = require("bcrypt");
 require("dotenv").config({path: "./config/.env"});
-const jwt = require('jsonwebtoken');
-
-const expiration = 24 * 60 * 60 * 100;
-
-const createToken = (id) => {
-    return jwt.sign({id}, process.env.TOKEN_SECRET, {
-        expiresIn: expiration
-    })
-}
 
 //**************** AUTHENTIFICATION (CREATE) *********************************//
 
 module.exports.register = async (req, res) => {
     const {username, password, email} = req.body;
     try {
-        const user = await userModel.create({username, password, email});
+        const hashedPwd = await bcrypt.hash(password, 15);
+        const user = await userModel.create({
+            username: username,
+            password: hashedPwd,
+            email: email
+        });
+        req.session.loggedin = true;
+        req.session.username = username;
         res.status(201).json({user: user._id});
     } catch (err) {
-        res.status(400).json({err})
+        res.status(400).json("error :" + err)
     }
 }
 
 module.exports.logIn = async (req, res) => {
     const {username, password} = req.body;
+
     try {
-        const user = await userModel.login(username, password);
-        const token = createToken(user._id);
-        res.cookie('jwt', token, {httpOnly: true, expiration});
-        res.status(201).json({user: user._id})
+        const user = await userModel.findOne({username});
+        await bcrypt.compare(password, user.password);
+        req.session.loggedin = true;
+        req.session.username = username;
+        res.status(201).json({user})
     } catch (err) {
-        res.status(400).json({err});
+        res.status(400).send("error : " + err);
     }
 }
 
 module.exports.logout = async (req, res) => {
-    res.cookie('jwt', '', {maxAge: 1});
-    res.redirect('/');
+    req.session = null;
+    res.sendStatus(201);
 }
 
 //****************** DELETE **************************************************//
 
 module.exports.delete = async (req, res) => {
-    const {_id} = req.params;
+    const {_id, username} = req.params;
+
+    if (username !== req.session.username) res.status(400).send("Impossible" +
+        " de supprimer")
+
     try {
         await userModel.findById(_id);
         const followed = await userModel.find({
@@ -73,8 +79,11 @@ module.exports.delete = async (req, res) => {
 //****************** UPDATE **************************************************//
 
 module.exports.updateData = async (req, res) => {
-    const {_id} = req.params;
+    const {_id, original_username} = req.params;
     const {username, email, password, profil_pic_url} = req.body;
+
+    if (original_username !== req.session.username) res.status(400).send("Impossible" +
+        " de supprimer")
 
     try {
         const user = await userModel.findByIdAndUpdate(
@@ -94,7 +103,7 @@ module.exports.updateData = async (req, res) => {
 
 //****************** READ ****************************************************//
 
-module.exports.getAllUsers = async (req, res) => {
+module.exports.getAllUsers = async (req, res, next) => {
     try {
         const users = await userModel.find();
         res.status(201).json(users);

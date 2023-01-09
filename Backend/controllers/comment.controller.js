@@ -43,7 +43,10 @@ module.exports.userComments = async (req, res) => {
 
 module.exports.update = async (req, res) => {
     const {content, post, author} = req.body;
-    const {_id} = req.params;
+    const {_id, username} = req.params;
+
+    if (username !== req.session.username) res.status(400).send("Impossible" +
+        " de modifier")
 
     try {
         const comment = await commentModel.findByIdAndUpdate(
@@ -94,7 +97,10 @@ module.exports.dislike = async (req, res) => {
 //********************** DELETE **********************************************//
 
 module.exports.delete = async (req, res) => {
-    const {_id} = req.params;
+    const {_id, username} = req.params;
+
+    if (username !== req.session.username) res.status(400).send("Impossible" +
+        " de supprimer")
 
     try {
         const comment = await commentModel.findByIdAndDelete(_id);

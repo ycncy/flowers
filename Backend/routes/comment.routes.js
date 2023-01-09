@@ -1,9 +1,10 @@
 const commentController = require('../controllers/comment.controller');
+const {restrain_access} = require('../middleware/middlewares');
 const router = require('express').Router();
 
 //********************** CREATE **********************************************//
 
-router.post('/create', commentController.create);
+router.post('/create', restrain_access, commentController.create);
 
 //********************** READ ************************************************//
 
@@ -12,12 +13,12 @@ router.get('/userid/:author', commentController.userComments);
 
 //********************** UPDATE **********************************************//
 
-router.patch('/:_id', commentController.update);
-router.post('/like/:_id', commentController.like);
-router.post('/dislike/:_id', commentController.dislike);
+router.patch('/:_id', restrain_access, commentController.update);
+router.post('/like/:_id', restrain_access, commentController.like);
+router.post('/dislike/:_id', restrain_access, commentController.dislike);
 
 //********************** DELETE **********************************************//
 
-router.delete('/:_id', commentController.delete);
+router.delete('/:_id', restrain_access, commentController.delete);
 
 module.exports = router;

@@ -4,17 +4,7 @@ const app = express();
 app.use(express.json());
 
 //Import base de donnée
-require("./config/db");
-
-//Fonctions du middleware de connexion
-const {
-    is_authenticated,
-    restrain_access
-} = require('./middleware/auth.middleware');
-app.get('*', is_authenticated);
-app.get('/jwtid', restrain_access, (req, res) => {
-    res.status(201).send(res.locals.user._id);
-})
+require("./config/db")
 
 //BodyParser
 const bodyParser = require('body-parser');
@@ -24,6 +14,14 @@ app.use(bodyParser.urlencoded({extended: true}));
 //Cookie
 const cookieParser = require('cookie-parser');
 app.use(cookieParser());
+
+//Session
+const session = require('express-session');
+app.use(session({
+    secret: 'secret',
+    resave: true,
+    saveUninitialized: true
+}));
 
 //Cors
 const cors = require("cors");

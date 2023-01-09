@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const {ObjectId} = require("mongodb");
 const {isEmail} = require("validator");
-const bcrypt = require("bcrypt");
+require("dotenv").config({path: "./config/.env"});
 
 const userSchema = new mongoose.Schema(
     {
@@ -15,7 +15,8 @@ const userSchema = new mongoose.Schema(
             type: String,
             required: true,
             validate: [isEmail],
-            lowercase: true
+            lowercase: true,
+            unique: true
         },
         password: {
             type: String,
@@ -37,24 +38,6 @@ const userSchema = new mongoose.Schema(
         timestamps: true
     }
 );
-
-userSchema.pre("save", async function (next) {
-    const salt = await bcrypt.genSalt();
-    this.password = await bcrypt.hash(this.password, salt);
-    next();
-})
-
-userSchema.statics.login = async function (username, password) {
-    const user = await this.findOne({username});
-    if (user) {
-        const auth = await bcrypt.compare(password, user.password);
-        if (auth) {
-            return user;
-        }
-        throw Error('Mauvais mot de passe');
-    }
-    throw Error("Mauvais nom d'utilisateur");
-};
 
 const Users = mongoose.model("Users", userSchema);
 module.exports = Users;

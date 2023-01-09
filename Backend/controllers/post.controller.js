@@ -65,8 +65,11 @@ module.exports.postLikes = async (req, res) => {
 //********************** UPDATE **********************************************//
 
 module.exports.update = async (req, res) => {
-    const {_id} = req.params;
+    const {_id, username} = req.params;
     const {image_url, description, author} = req.body;
+
+    if (username !== req.session.username) res.status(400).send("Impossible" +
+        " de modifier")
 
     try {
         const post = await postModel.findByIdAndUpdate(
@@ -115,7 +118,10 @@ module.exports.addLike = async (req, res) => {
 //********************** DELETE **********************************************//
 
 module.exports.delete = async (req, res) => {
-    const {_id} = req.params;
+    const {_id, username} = req.params;
+
+    if (username !== req.session.username) res.status(400).send("Impossible" +
+        " de supprimer")
 
     try {
         await postModel.findByIdAndDelete(_id);
