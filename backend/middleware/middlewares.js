@@ -11,15 +11,9 @@ module.exports.isAdmin = (req, res, next) => {
 }
 
 module.exports.restrain_access = (req, res, next) => {
-    if (req.session.username === undefined) {
+    if (!req.session.username) {
         res.sendStatus(401);
     } else {
         next();
     }
-}
-
-module.exports.isAuthenticated = (req, res, next) => {
-    res.locals.authenticated = req.session.username !== undefined;
-    res.locals.user = req.session.username;
-    next();
 }

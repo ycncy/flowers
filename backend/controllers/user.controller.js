@@ -24,21 +24,33 @@ module.exports.register = async (req, res) => {
 
 module.exports.logIn = async (req, res) => {
     const {username, password} = req.body;
-
+    const user = await userModel.findOne({username});
     try {
-        const user = await userModel.findOne({username});
-        await bcrypt.compare(password, user.password);
-        req.session.loggedin = true;
-        req.session.username = username;
-        res.status(201).json({user})
+        const pwd = await bcrypt.compare(password, user.password);
+        if (pwd) {
+            req.session.loggedin = true;
+            req.session.username = username;
+            req.session.save();
+            res.json({user});
+        }
     } catch (err) {
         res.status(400).send("error : " + err);
     }
 }
 
 module.exports.logout = async (req, res) => {
-    req.session = null;
-    res.sendStatus(201);
+    req.session.destroy(() => {
+        res.clearCookie(process.env.SESSION_NAME);
+        res.send("Logged Out");
+    });
+}
+
+module.exports.authCheck = async (req, res) => {
+    const username = req.session.username;
+    if (username) {
+        return res.json({username});
+    }
+    return res.status(401).send("Aucun utilisateur connecté");
 }
 
 //****************** DELETE **************************************************//
