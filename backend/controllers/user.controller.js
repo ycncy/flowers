@@ -1,6 +1,7 @@
 const userModel = require('../models/user.model');
-const {genSalt} = require("bcrypt");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+
 require("dotenv").config({path: "./config/.env"});
 
 //**************** AUTHENTIFICATION (CREATE) *********************************//
@@ -8,51 +9,60 @@ require("dotenv").config({path: "./config/.env"});
 module.exports.register = async (req, res) => {
     const {username, password, email} = req.body;
     try {
-        const hashedPwd = await bcrypt.hash(password, 15);
+        const hashedPwd = await bcrypt.hash(password, 10);
         const user = await userModel.create({
             username: username,
             password: hashedPwd,
             email: email
         });
-        req.session.loggedin = true;
-        req.session.username = username;
-        res.status(201).json({user: user._id});
+
+        res.status(201).send({
+            accessToken: jwt.sign({user: user._id}, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '24h'}),
+            user: user._id
+        });
+
     } catch (err) {
         res.status(400).json("error :" + err)
     }
 }
 
 module.exports.logIn = async (req, res) => {
-    const {username, password} = req.body;
-    const user = await userModel.findOne({username});
-    try {
-        const pwd = await bcrypt.compare(password, user.password);
-        if (pwd) {
-            req.session.loggedin = true;
-            req.session.username = username;
-            req.session.save();
-            res.json({user});
-        }
-    } catch (err) {
-        res.status(400).send("error : " + err);
-    }
+    userModel.findOne({username: req.body.username})
+        .then(user => {
+            if (!user) {
+                return res.status(401).json({error: 'Utilisateur non trouvé !'});
+            }
+            bcrypt.compare(req.body.password, user.password)
+                .then(valid => {
+                    if (!valid) {
+                        return res.status(401).json({error: 'Mot de passe incorrect !'});
+                    }
+                    res.status(200).json({
+                        userId: user._id,
+                        token: jwt.sign(
+                            {userId: user._id},
+                            process.env.ACCESS_TOKEN_SECRET,
+                            {expiresIn: '24h'}
+                        )
+                    });
+                })
+                .catch(error => res.status(500).json({error}));
+        })
+        .catch(error => res.status(500).json({error}));
 }
 
 module.exports.logout = async (req, res) => {
-    req.session.destroy(() => {
-        res.clearCookie(process.env.SESSION_NAME);
-        res.send("Logged Out");
+    const authHeader = req.headers.authorization.split(' ')[1];
+    jwt.sign(authHeader, process.env.ACCESS_TOKEN_SECRET, {expiresIn: 1}, (logout, err) => {
+        if (logout) {
+            res.send({msg: 'You have been Logged Out'});
+        } else {
+            if (err) {
+                res.send({msg: 'Error'});
+            }
+        }
     });
 }
-
-module.exports.authCheck = async (req, res) => {
-    const username = req.session.username;
-    if (username) {
-        return res.json({username});
-    }
-    return res.status(401).send("Aucun utilisateur connecté");
-}
-
 //****************** DELETE **************************************************//
 
 module.exports.delete = async (req, res) => {

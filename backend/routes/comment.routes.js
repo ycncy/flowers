@@ -1,5 +1,5 @@
 const commentController = require('../controllers/comment.controller');
-const {restrain_access} = require('../middleware/middlewares');
+const {restrain_access} = require('../middlewares/middleware');
 const router = require('express').Router();
 
 //********************** CREATE **********************************************//

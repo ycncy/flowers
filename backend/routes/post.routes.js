@@ -1,5 +1,5 @@
 const postController = require('../controllers/post.controller');
-const {restrain_access, isAdmin} = require('../middleware/middlewares');
+const {restrain_access, isAdmin} = require('../middlewares/middleware');
 const router = require('express').Router();
 
 //********************** CREATE **********************************************//
@@ -22,7 +22,7 @@ router.post('/like/:_id', restrain_access, postController.addLike);
 //********************** DELETE **********************************************//
 
 router.delete('/:_id', restrain_access, postController.delete);
-router.delete('/comment/:_id', isAdmin, postController.deleteComment);
-router.delete('/like/:_id', isAdmin, postController.deleteLike);
+router.delete('/comment/:_id', postController.deleteComment);
+router.delete('/like/:_id', postController.deleteLike);
 
 module.exports = router;
