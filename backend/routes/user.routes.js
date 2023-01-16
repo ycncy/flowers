@@ -11,12 +11,12 @@ router.post("/logout", userController.logout);
 //************************* GETTERS ******************************************//
 
 router.get("/all-users", restrain_access, userController.getAllUsers);
-router.get("/:_id", userController.getUserById);
+router.get("/:token", userController.getUserByToken);
 
 //********************** DEL/UPDATE ******************************************//
 
-router.delete("/:_id", restrain_access, userController.delete);
-router.patch("/:_id", restrain_access, userController.updateData);
+router.delete("/:token", restrain_access, userController.delete);
+router.patch("/:token", restrain_access, userController.updateData);
 
 //********************** FOLLOW **********************************************//
 

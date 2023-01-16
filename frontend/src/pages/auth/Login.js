@@ -1,9 +1,7 @@
 import React, {useState} from "react";
 import {useNavigate} from "react-router-dom";
 
-import axios from "axios";
-
-import {authService} from "../../services/auth.service";
+import {authService} from "../../_services/auth.service";
 
 const Login = () => {
 
@@ -23,7 +21,8 @@ const Login = () => {
 
     const login = (e) => {
         e.preventDefault();
-        axios.post('http://localhost:3001/api/users/login', credentials)
+        if (authService.isLogged()) authService.logout();
+        authService.login(credentials)
             .then(res => {
                     authService.saveToken(res.data.token);
                     navigate("/");

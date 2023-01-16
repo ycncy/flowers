@@ -33,7 +33,9 @@ const userSchema = new mongoose.Schema(
         following: [{
             type: ObjectId,
         }],
-        token: String
+        token: {
+            type: String,
+        }
     },
     {
         timestamps: true

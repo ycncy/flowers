@@ -17,7 +17,7 @@ module.exports.register = async (req, res) => {
         });
 
         res.status(201).send({
-            accessToken: jwt.sign({user: user._id}, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '24h'}),
+            accessToken: token,
             user: user._id
         });
 
@@ -33,17 +33,23 @@ module.exports.logIn = async (req, res) => {
                 return res.status(401).json({error: 'Utilisateur non trouvé !'});
             }
             bcrypt.compare(req.body.password, user.password)
-                .then(valid => {
+                .then(async (valid) => {
                     if (!valid) {
                         return res.status(401).json({error: 'Mot de passe incorrect !'});
                     }
+                    const token = jwt.sign(
+                        {userId: user._id},
+                        process.env.ACCESS_TOKEN_SECRET,
+                        {expiresIn: '24h'});
+                    await user.update({
+                        $set: {
+                            token: token
+                        }
+                    });
+                    await user.save();
                     res.status(200).json({
                         userId: user._id,
-                        token: jwt.sign(
-                            {userId: user._id},
-                            process.env.ACCESS_TOKEN_SECRET,
-                            {expiresIn: '24h'}
-                        )
+                        token: token
                     });
                 })
                 .catch(error => res.status(500).json({error}));
@@ -66,32 +72,30 @@ module.exports.logout = async (req, res) => {
 //****************** DELETE **************************************************//
 
 module.exports.delete = async (req, res) => {
-    const {_id, username} = req.params;
-
-    if (username !== req.session.username) res.status(400).send("Impossible" +
-        " de supprimer")
+    const {token} = req.params;
 
     try {
-        await userModel.findById(_id);
+        const user = await userModel.find({token: token});
+
         const followed = await userModel.find({
-            followers: {$in: [_id]}
+            followers: {$in: [user._id]}
         });
         const following = await userModel.find({
-            following: {$in: [_id]}
+            following: {$in: [user._id]}
         });
         for (let i = 0; i < followed.length; i++) {
             await userModel.findByIdAndUpdate(
                 {_id: followed[i]._id},
-                {$pull: {followers: _id}}
+                {$pull: {followers: user._id}}
             );
         }
         for (let i = 0; i < following.length; i++) {
             await userModel.findByIdAndUpdate(
                 {_id: following[i]._id},
-                {$pull: {following: _id}}
+                {$pull: {following: user._id}}
             );
         }
-        await userModel.findByIdAndDelete({_id});
+        await userModel.findOneAndDelete({token});
         res.status(201).send("L'utilisateur a été supprimé");
     } catch (err) {
         res.status(400).send("Il n'existe pas de profils pour ce nom" + " d'utilisateur");
@@ -134,11 +138,11 @@ module.exports.getAllUsers = async (req, res, next) => {
     }
 }
 
-module.exports.getUserById = async (req, res) => {
-    const {_id} = req.params;
+module.exports.getUserByToken = async (req, res) => {
+    const {token} = req.params;
     try {
-        const user = await userModel.findById({_id});
-        res.status(201).json(user);
+        const user = await userModel.findOne({token: token});
+        res.status(201).json({user});
     } catch (err) {
         res.status(400).json({err: err.message});
     }

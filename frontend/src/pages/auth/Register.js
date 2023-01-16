@@ -1,9 +1,7 @@
 import React, {useState} from 'react';
 import {useNavigate} from "react-router-dom";
 
-import axios from "axios";
-
-import {authService} from "../../services/auth.service";
+import {authService} from "../../_services/auth.service";
 
 const Register = () => {
     let navigate = useNavigate();
@@ -23,7 +21,7 @@ const Register = () => {
 
     const register = (e) => {
         e.preventDefault();
-        axios.post('http://localhost:3001/api/users/register', credentials)
+        authService.register(credentials)
             .then(res => {
                     authService.saveToken(res.data.token);
                     navigate("/");

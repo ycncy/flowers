@@ -3,7 +3,8 @@ import {useNavigate} from "react-router-dom";
 
 import axios from "axios";
 
-import {authService} from "../services/auth.service";
+import {authService} from "../_services/auth.service";
+import Navbar from "../components/Navbar";
 
 export function Home() {
 
@@ -19,7 +20,7 @@ export function Home() {
         })
             .then(res => setElements(res.data))
             .catch(err => console.log(err));
-    },)
+    }, [elements])
 
     const logout = () => {
         authService.logout();
@@ -28,6 +29,7 @@ export function Home() {
 
     return (
         <div>
+            <Navbar/>
             <ul>
                 {elements.map((user, index) => (
                     <li key={index}>
