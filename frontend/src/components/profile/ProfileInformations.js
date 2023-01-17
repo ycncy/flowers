@@ -4,17 +4,17 @@ import Publications from "../posts/Publications";
 import Followers from "../posts/Followers";
 import Following from "../posts/Following";
 
-const ProfileInformations = () =>
+const ProfileInformations = () => {
 
-const [divStates, setDivStates] = useState({
-    publications: true,
-    followers: false,
-    following: false,
-    likes: false
-})
+    const [divStates, setDivStates] = useState({
+        publications: true,
+        followers: false,
+        following: false,
+        likes: false
+    })
 
-const showHide = (name) => {
-    switch (name) {
+    const showHide = (name) => {
+        switch (name) {
             case "publications":
                 setDivStates({
                     likes: false,
