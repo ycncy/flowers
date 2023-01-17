@@ -9,7 +9,7 @@ const Publications = (props) => {
         postService.userPosts(props.username)
             .then(res => setPublications(res.data.posts))
             .catch(err => console.log(err));
-    }, [publications])
+    }, [])
 
     return (
         <div>
