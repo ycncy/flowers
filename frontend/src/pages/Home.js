@@ -4,7 +4,7 @@ import MainPage from "./MainPage";
 import '../css/home.css'
 
 import {authService} from "../_services/auth.service";
-import LogPage from "./LogPage";
+import {Navigate} from "react-router-dom";
 
 export function Home() {
 
@@ -20,6 +20,6 @@ export function Home() {
         )
     }
     return (
-        <LogPage/>
+        <Navigate to="/connexion"></Navigate>
     );
 }

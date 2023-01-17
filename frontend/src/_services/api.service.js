@@ -6,11 +6,9 @@ const Axios = axios.create({
 });
 
 Axios.interceptors.request.use(request => {
-
     if (authService.isLogged()) {
         request.headers.Authorization = 'Bearer ' + authService.getToken()
     }
-
     return request
 })
 

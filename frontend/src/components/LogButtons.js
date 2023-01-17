@@ -1,13 +1,17 @@
 import React from 'react';
 import {authService} from "../_services/auth.service";
 
+import Logout from '../images/logout.png'
+
 const LogButtons = () => {
 
     const isLogged = authService.isLogged();
 
     if (isLogged) {
         return (
-            <a href="/connexion/logout">Se déconnecter</a>
+            <a href="/connexion/logout">
+                Se déconnecter
+            </a>
         )
     } else {
         return (

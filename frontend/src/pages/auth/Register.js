@@ -32,20 +32,23 @@ const Register = () => {
 
     return (
         <form onSubmit={register}>
+            <h1>S'inscrire</h1>
             <div className="group">
-                <label htmlFor="username">Nom d'utilisateur</label>
                 <input type="text" name="username" value={credentials.username}
+                       placeholder="Nom d'utilisateur"
                        onChange={onChange}/>
+                <label htmlFor="username">Minimum 3 caractères</label>
             </div>
             <div className="group">
-                <label htmlFor="email">Email</label>
                 <input type="text" name="email" value={credentials.email}
+                       placeholder="Adresse mail"
                        onChange={onChange}/>
             </div>
             <div className="group">
-                <label htmlFor="password">Mot de passe</label>
                 <input type="password" name="password"
+                       placeholder="Mot de passe"
                        value={credentials.password} onChange={onChange}/>
+                <label htmlFor="username">Minimum 8 caractères</label>
             </div>
             <div className="group">
                 <button>S'inscrire</button>

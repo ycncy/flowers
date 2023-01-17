@@ -33,14 +33,15 @@ const Login = () => {
 
     return (
         <form onSubmit={login}>
+            <h1>Se connecter</h1>
             <div className="group">
-                <label htmlFor="username">Nom d'utilisateur</label>
                 <input type="text" name="username" value={credentials.username}
+                       placeholder="Nom d'utilisateur"
                        onChange={onChange}/>
             </div>
             <div className="group">
-                <label htmlFor="password">Mot de passe</label>
                 <input type="password" name="password"
+                       placeholder="Mot de passe"
                        value={credentials.password} onChange={onChange}/>
             </div>
             <div className="group">
