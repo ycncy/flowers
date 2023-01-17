@@ -1,18 +1,20 @@
-import React, {useEffect, useState} from 'react';
-import Test1 from "../../pages/Test1";
-import Test2 from "../../pages/Test2";
+import React, {useState} from 'react';
 
-const ProfileInformations = () => {
+import Publications from "../posts/Publications";
+import Followers from "../posts/Followers";
+import Following from "../posts/Following";
 
-    const [divStates, setDivStates] = useState({
-        publications: true,
-        followers: false,
-        following: false,
-        likes: false
-    })
+const ProfileInformations = () =>
 
-    const showHide = (name) => {
-        switch (name) {
+const [divStates, setDivStates] = useState({
+    publications: true,
+    followers: false,
+    following: false,
+    likes: false
+})
+
+const showHide = (name) => {
+    switch (name) {
             case "publications":
                 setDivStates({
                     likes: false,
@@ -52,18 +54,21 @@ const ProfileInformations = () => {
 
     return (
         <div>
-            {divStates.publications && <Test1/>}
-            <hr/>
-            {divStates.followers && <Test2/>}
-            <hr/>
             <nav>
                 <button onClick={() => showHide("publications")}>Publications
                 </button>
                 <button onClick={() => showHide("followers")}>Abonnés</button>
                 <button onClick={() => showHide("following")}>Abonnements
                 </button>
-                <button onClick={() => showHide("likes")}>J'aime</button>
             </nav>
+            <div className="content">
+                <hr/>
+                {divStates.publications && <Publications/>}
+                <hr/>
+                {divStates.followers && <Followers/>}
+                <hr/>
+                {divStates.following && <Following/>}
+            </div>
         </div>
     );
 };
