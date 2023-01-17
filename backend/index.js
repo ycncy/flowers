@@ -4,7 +4,14 @@ const app = express();
 app.use(express.json());
 
 //Cors
-require('cors');
+const corsOptions = {
+    origin: "http://localhost:3000"
+}
+
+const cors = require("cors");
+
+app.use(cors(corsOptions));
+
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');

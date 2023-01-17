@@ -11,7 +11,8 @@ router.post("/logout", userController.logout);
 //************************* GETTERS ******************************************//
 
 router.get("/all-users", restrain_access, userController.getAllUsers);
-router.get("/:token", userController.getUserByToken);
+router.get("/token/:token", userController.getUserByToken);
+router.get("/username/:username", userController.getUserByUsername);
 
 //********************** DEL/UPDATE ******************************************//
 
@@ -20,7 +21,7 @@ router.patch("/:token", restrain_access, userController.updateData);
 
 //********************** FOLLOW **********************************************//
 
-router.get("/follows/:_id", userController.getFollow);
+router.get("/follows/:username", userController.getFollow);
 router.post("/add-follower", restrain_access, userController.addFollower);
 router.post("/remove-follower", restrain_access, userController.removeFollower);
 

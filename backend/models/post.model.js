@@ -5,7 +5,7 @@ const postSchema = new mongoose.Schema(
     {
         image_url: {type: String, required: true},
         description: {type: String},
-        author: {type: ObjectId, required: true},
+        author: {type: String, required: true},
         comments: [{
             type: mongoose.Schema.Types.ObjectId,
         }],

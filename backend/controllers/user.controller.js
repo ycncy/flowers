@@ -15,9 +15,7 @@ module.exports.register = async (req, res) => {
             password: hashedPwd,
             email: email
         });
-
         res.status(201).send({
-            accessToken: token,
             user: user._id
         });
 
@@ -30,12 +28,18 @@ module.exports.logIn = async (req, res) => {
     userModel.findOne({username: req.body.username})
         .then(user => {
             if (!user) {
-                return res.status(401).json({error: 'Utilisateur non trouvé !'});
+                return res.status(400).json({
+                    error: 'Utilisateur non trouvé' +
+                        ' !'
+                });
             }
             bcrypt.compare(req.body.password, user.password)
                 .then(async (valid) => {
                     if (!valid) {
-                        return res.status(401).json({error: 'Mot de passe incorrect !'});
+                        return res.status(400).json({
+                            error: 'Mot de passe' +
+                                ' incorrect !'
+                        });
                     }
                     const token = jwt.sign(
                         {userId: user._id},
@@ -47,14 +51,14 @@ module.exports.logIn = async (req, res) => {
                         }
                     });
                     await user.save();
-                    res.status(200).json({
+                    res.status(201).json({
                         userId: user._id,
                         token: token
                     });
                 })
-                .catch(error => res.status(500).json({error}));
+                .catch(error => res.status(400).json({error}));
         })
-        .catch(error => res.status(500).json({error}));
+        .catch(error => res.status(400).json({error}));
 }
 
 module.exports.logout = async (req, res) => {
@@ -138,6 +142,16 @@ module.exports.getAllUsers = async (req, res, next) => {
     }
 }
 
+module.exports.getUserByUsername = async (req, res) => {
+    const {username} = req.params;
+    try {
+        const user = await userModel.findOne({username: username});
+        res.status(201).json({user});
+    } catch (err) {
+        res.status(400).json({err: err.message});
+    }
+}
+
 module.exports.getUserByToken = async (req, res) => {
     const {token} = req.params;
     try {
@@ -151,34 +165,33 @@ module.exports.getUserByToken = async (req, res) => {
 //*********** FOLLOWERS/FOLLOWING ********************************************//
 
 module.exports.addFollower = async (req, res) => {
-    const {follower_id, followed_id} = req.body;
-
+    const {follower_username, followed_username} = req.body;
     try {
-        await userModel.findByIdAndUpdate(
-            {_id: follower_id},
-            {$addToSet: {following: followed_id}}
+        const user1 = await userModel.findOneAndUpdate(
+            {username: follower_username},
+            {$addToSet: {following: followed_username}}
         );
-        await userModel.findByIdAndUpdate(
-            {_id: followed_id},
-            {$addToSet: {followers: follower_id}}
+        const user2 = await userModel.findOneAndUpdate(
+            {username: followed_username},
+            {$addToSet: {followers: follower_username}}
         );
-        res.status(201).send("+1");
+        res.status(201).send({user1, user2});
     } catch (err) {
         res.status(400).send("Impossible : " + err);
     }
 }
 
 module.exports.removeFollower = async (req, res) => {
-    const {unfollower_id, unfollowed_id} = req.body;
+    const {unfollower_username, unfollowed_username} = req.body;
 
     try {
-        await userModel.findByIdAndUpdate(
-            {_id: unfollower_id},
-            {$pull: {following: unfollowed_id}}
+        await userModel.updateOne(
+            {username: unfollower_username},
+            {$pull: {following: unfollowed_username}}
         );
-        await userModel.findByIdAndUpdate(
-            {_id: unfollowed_id},
-            {$pull: {followers: unfollower_id}}
+        await userModel.updateOne(
+            {username: unfollowed_username},
+            {$pull: {followers: unfollower_username}}
         );
         res.status(201).send("-1");
     } catch (err) {
@@ -188,10 +201,10 @@ module.exports.removeFollower = async (req, res) => {
 
 //Renvoie les abonnés et les abonnements d'un utilisateur
 module.exports.getFollow = async (req, res) => {
-    const {_id} = req.params;
+    const {username} = req.params;
 
     try {
-        const user = await userModel.findById({_id});
+        const user = await userModel.findOne({username: username});
         res.status(201).send({
             followers: user.followers,
             following: user.following

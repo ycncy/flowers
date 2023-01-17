@@ -1,22 +1,18 @@
 import React, {useEffect, useState} from "react";
 
-import {authService} from "../_services/auth.service";
+import ProfileNav from "../components/profile/ProfileNav";
+import ProfileInformations from "../components/profile/ProfileInformations";
 import {userService} from "../_services/user.service";
+import {useParams} from "react-router-dom";
 
 export function Profile() {
 
-    const [user, setUser] = useState({})
-
-    useEffect(() => {
-        userService.getUser(authService.getToken())
-            .then(res => setUser(res.data.user))
-            .catch(err => console.log(err));
-    }, [user])
+    const {username} = useParams();
 
     return (
         <div>
-            <p>{user.username}</p>
-            <p>{user.email}</p>
+            <ProfileNav/>
+            <ProfileInformations username={username}/>
         </div>
     );
 }

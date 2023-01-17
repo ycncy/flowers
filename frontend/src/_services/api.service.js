@@ -2,7 +2,7 @@ import axios from 'axios'
 import {authService} from './auth.service'
 
 const Axios = axios.create({
-    baseURL: 'http://localhost:3001'
+    baseURL: "http://localhost:3001"
 });
 
 Axios.interceptors.request.use(request => {
@@ -18,9 +18,9 @@ Axios.interceptors.request.use(request => {
 Axios.interceptors.response.use(response => {
     return response
 }, error => {
-    if (error.response.status === 401) {
+    if (error.response.status === 400) {
         authService.logout()
-        window.location = '/auth/login'
+        window.location = '/connexion/login'
     } else {
         return Promise.reject(error)
     }

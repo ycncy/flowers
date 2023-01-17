@@ -28,10 +28,10 @@ const userSchema = new mongoose.Schema(
             default: '../public/flower.png'
         },
         followers: [{
-            type: ObjectId,
+            type: String,
         }],
         following: [{
-            type: ObjectId,
+            type: String,
         }],
         token: {
             type: String,

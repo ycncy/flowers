@@ -27,5 +27,4 @@ const getToken = () => {
 
 export const authService = {
     saveToken, logout, isLogged, getToken, login, register
-
 }

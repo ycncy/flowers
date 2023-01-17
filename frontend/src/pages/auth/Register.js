@@ -24,7 +24,7 @@ const Register = () => {
         authService.register(credentials)
             .then(res => {
                     authService.saveToken(res.data.token);
-                    navigate("/");
+                navigate("/connexion/login");
                 }
             )
             .catch(err => console.log(err));

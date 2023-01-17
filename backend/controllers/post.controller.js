@@ -27,11 +27,11 @@ module.exports.postDetail = async (req, res) => {
 }
 
 //Renvoie tous les posts d'un utilisateur
-module.exports.postsByUserId = async (req, res) => {
-    const {user_id} = req.params;
+module.exports.postsByUsername = async (req, res) => {
+    const {username} = req.params;
 
     try {
-        const posts = await postModel.find({author: user_id});
+        const posts = await postModel.find({author: username});
         res.status(201).json({posts});
     } catch (err) {
         res.status(400).send({err});
