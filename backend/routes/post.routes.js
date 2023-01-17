@@ -1,5 +1,5 @@
 const postController = require('../controllers/post.controller');
-const {restrain_access} = require('../middlewares/middleware');
+const {restrain_access, isAdmin} = require('../middlewares/middleware');
 const router = require('express').Router();
 
 //********************** CREATE **********************************************//
@@ -9,7 +9,7 @@ router.post('/create', restrain_access, postController.create);
 //********************** READ ************************************************//
 
 router.get('/:_id', postController.postDetail);
-router.get('/byusername/:username', postController.postsByUsername);
+router.get('/byuserid/:user_id', postController.postsByUserId);
 router.get('/comments/:_id', postController.postComments);
 router.get('/likes/:_id', postController.postLikes);
 

@@ -11,17 +11,16 @@ router.post("/logout", userController.logout);
 //************************* GETTERS ******************************************//
 
 router.get("/all-users", restrain_access, userController.getAllUsers);
-router.get("/token/:token", userController.getUserByToken);
-router.get("/username/:username", userController.getUserByUsername);
+router.get("/:_id", userController.getUserById);
 
 //********************** DEL/UPDATE ******************************************//
 
-router.delete("/:token", restrain_access, userController.delete);
-router.patch("/:token", restrain_access, userController.updateData);
+router.delete("/:_id", restrain_access, userController.delete);
+router.patch("/:_id", restrain_access, userController.updateData);
 
 //********************** FOLLOW **********************************************//
 
-router.get("/follows/:username", userController.getFollow);
+router.get("/follows/:_id", userController.getFollow);
 router.post("/add-follower", restrain_access, userController.addFollower);
 router.post("/remove-follower", restrain_access, userController.removeFollower);
 
