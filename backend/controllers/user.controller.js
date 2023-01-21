@@ -8,23 +8,22 @@ require("dotenv").config({path: "./config/.env"});
 
 module.exports.register = async (req, res) => {
     const {username, password, email} = req.body;
-    try {
-        const hashedPwd = await bcrypt.hash(password, 10);
-        const user = await userModel.create({
-            username: username,
-            password: hashedPwd,
-            email: email
-        });
-        res.status(201).send({
-            user: user._id
-        });
 
-    } catch (err) {
-        res.status(400).json("error :" + err)
-    }
+    const hashedPwd = await bcrypt.hash(password, 10);
+
+    if (!hashedPwd) res.status(400).send("Mauvais mot de passe");
+
+    await userModel.create({
+        username: username,
+        password: hashedPwd,
+        email: email
+    })
+        .then(response => res.send({response}))
+        .catch(err => res.status(400).send({err}))
 }
 
 module.exports.logIn = async (req, res) => {
+
     userModel.findOne({username: req.body.username})
         .then(user => {
             if (!user) {
@@ -78,94 +77,81 @@ module.exports.logout = async (req, res) => {
 module.exports.delete = async (req, res) => {
     const {token} = req.params;
 
-    try {
-        const user = await userModel.find({token: token});
-
-        const followed = await userModel.find({
-            followers: {$in: [user._id]}
-        });
-        const following = await userModel.find({
-            following: {$in: [user._id]}
-        });
-        for (let i = 0; i < followed.length; i++) {
-            await userModel.findByIdAndUpdate(
-                {_id: followed[i]._id},
-                {$pull: {followers: user._id}}
-            );
-        }
-        for (let i = 0; i < following.length; i++) {
-            await userModel.findByIdAndUpdate(
-                {_id: following[i]._id},
-                {$pull: {following: user._id}}
-            );
-        }
-        await userModel.findOneAndDelete({token});
-        res.status(201).send("L'utilisateur a été supprimé");
-    } catch (err) {
-        res.status(400).send("Il n'existe pas de profils pour ce nom" + " d'utilisateur");
-    }
+    await userModel.find({token: token})
+        .then(async (user) => {
+            const followed = await userModel.find({
+                followers: {$in: [user._id]}
+            });
+            const following = await userModel.find({
+                following: {$in: [user._id]}
+            });
+            for (let i = 0; i < followed.length; i++) {
+                await userModel.findByIdAndUpdate(
+                    {_id: followed[i]._id},
+                    {$pull: {followers: user._id}}
+                );
+            }
+            for (let i = 0; i < following.length; i++) {
+                await userModel.findByIdAndUpdate(
+                    {_id: following[i]._id},
+                    {$pull: {following: user._id}}
+                );
+            }
+            await userModel.findOneAndDelete({token})
+                .then(response => res.send({response}))
+                .catch(err => res.status(400).send({err}))
+        })
+        .catch(err => res.status(400).send({err}));
 }
 
 //****************** UPDATE **************************************************//
 
 module.exports.updateData = async (req, res) => {
-    const {_id, original_username} = req.params;
+    const {_id} = req.params;
     const {username, email, password, profil_pic_url} = req.body;
 
-    if (original_username !== req.session.username) res.status(400).send("Impossible" +
-        " de supprimer")
-
-    try {
-        const user = await userModel.findByIdAndUpdate(
-            {_id},
-            {
-                username: username,
-                email: email,
-                password: password,
-                profil_pic_url: profil_pic_url
-            },
-            {new: true});
-        res.status(201).send({user: user._id});
-    } catch (err) {
-        return res.status(400).send({err});
-    }
+    await userModel.findByIdAndUpdate(
+        {_id},
+        {
+            username: username,
+            email: email,
+            password: password,
+            profil_pic_url: profil_pic_url
+        },
+        {new: true})
+        .then(response => res.send({response}))
+        .catch(err => res.status(400).send({err}))
 }
 
 //****************** READ ****************************************************//
 
-module.exports.getAllUsers = async (req, res, next) => {
-    try {
-        const users = await userModel.find();
-        res.status(201).json(users);
-    } catch (err) {
-        res.status(400).json({err: err.message});
-    }
+module.exports.getAllUsers = async (req, res) => {
+    await userModel.find()
+        .then(response => res.send({response}))
+        .catch(err => res.status(400).send({err}))
 }
 
 module.exports.getUserByUsername = async (req, res) => {
     const {username} = req.params;
-    try {
-        const user = await userModel.findOne({username: username});
-        res.status(201).json({user});
-    } catch (err) {
-        res.status(400).json({err: err.message});
-    }
+
+    await userModel.findOne({username: username})
+        .then(response => res.send({response}))
+        .catch(err => res.status(400).send({err}))
 }
 
 module.exports.getUserByToken = async (req, res) => {
     const {token} = req.params;
-    try {
-        const user = await userModel.findOne({token: token});
-        res.status(201).json({user});
-    } catch (err) {
-        res.status(400).json({err: err.message});
-    }
+
+    await userModel.findOne({token: token})
+        .then(response => res.send({response}))
+        .catch(err => res.status(400).send({err}))
 }
 
 //*********** FOLLOWERS/FOLLOWING ********************************************//
 
 module.exports.addFollower = async (req, res) => {
     const {follower_username, followed_username} = req.body;
+
     try {
         const user1 = await userModel.findOneAndUpdate(
             {username: follower_username},
