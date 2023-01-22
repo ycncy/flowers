@@ -75,9 +75,9 @@ module.exports.logout = async (req, res) => {
 //****************** DELETE **************************************************//
 
 module.exports.delete = async (req, res) => {
-    const {token} = req.params;
+    const {_id} = req.params;
 
-    await userModel.find({token: token})
+    await userModel.find({_id: _id})
         .then(async (user) => {
             const followed = await userModel.find({
                 followers: {$in: [user._id]}
@@ -97,7 +97,7 @@ module.exports.delete = async (req, res) => {
                     {$pull: {following: user._id}}
                 );
             }
-            await userModel.findOneAndDelete({token})
+            await userModel.findOneAndDelete({_id})
                 .then(response => res.send({response}))
                 .catch(err => res.status(400).send({err}))
         })
@@ -131,11 +131,11 @@ module.exports.getAllUsers = async (req, res) => {
         .catch(err => res.status(400).send({err}))
 }
 
-module.exports.getUserByUsername = async (req, res) => {
-    const {username} = req.params;
+module.exports.getUserById = async (req, res) => {
+    const {_id} = req.params;
 
-    await userModel.findOne({username: username})
-        .then(response => res.send({response}))
+    await userModel.findOne({_id: _id})
+        .then(response => res.send(response.username))
         .catch(err => res.status(400).send({err}))
 }
 
@@ -187,10 +187,10 @@ module.exports.removeFollower = async (req, res) => {
 
 //Renvoie les abonnés et les abonnements d'un utilisateur
 module.exports.getFollow = async (req, res) => {
-    const {username} = req.params;
+    const {_id} = req.params;
 
     try {
-        const user = await userModel.findOne({username: username});
+        const user = await userModel.findOne({_id: _id});
         res.status(201).send({
             followers: user.followers,
             following: user.following

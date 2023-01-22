@@ -1,13 +1,23 @@
+import '../profileInformations.css'
+
 import React from 'react';
+import FollowUser from "../FollowUser";
 
 const Following = (props) => {
-    return (
-        <div>
-            {props.following.map((user, index) => {
-                return <p key={index}>{user}</p>
-            })}
-        </div>
-    );
+
+    if (props.following.length !== 0) {
+        return (
+            <div>
+                {props.following.map((following, index) => {
+                    return <FollowUser key={index} username={following}/>
+                })}
+            </div>
+        );
+    }
+    return <div>
+        <h1>Aucun abonnement :(</h1>
+        <h3>Explorez l'accueil pour découvrir de nouveaux utilisateurs</h3>
+    </div>
 };
 
 export default Following;

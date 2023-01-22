@@ -1,13 +1,18 @@
 import Followers from "./profile_info/Followers";
 import Publications from "./profile_info/Publications";
 import Following from "./profile_info/Following";
-import {useEffect, useState} from "react";
+
+import {useContext, useEffect, useState} from "react";
+
 import {postService} from "../../_services/post.service";
 import {userService} from "../../_services/user.service";
+import {UidContext} from "../AppContext";
+
+import './profileInformations.css'
 
 const ProfileInformations = (props) => {
 
-    const [showPublications, setShowPublications] = useState(false);
+    const [showPublications, setShowPublications] = useState(true);
     const [showFollowers, setShowFollowers] = useState(false);
     const [showFollowing, setShowFollowing] = useState(false);
 
@@ -15,25 +20,38 @@ const ProfileInformations = (props) => {
     const [followers, setFollowers] = useState([]);
     const [following, setFollowing] = useState([]);
 
-    useEffect(() => {
-        postService.userPosts(props.username)
+    const uid = useContext(UidContext)
+
+    const userPosts = async () => {
+        await postService.userPosts(props.username)
             .then(res => {
                 setPublications(res.data.posts)
             })
             .catch(err => console.log(err));
+    }
+
+    const userFollows = async () => {
+        if (uid !== undefined) {
+            userService.getUserFollow(uid)
+                .then(res => {
+                    setFollowing(res.data.following);
+                    setFollowers(res.data.followers);
+                })
+                .catch(err => console.log(err));
+        }
+    }
+
+    useEffect(() => {
+        userPosts();
     }, [props]);
 
     useEffect(() => {
-        userService.getUserFollow(props.username)
-            .then(res => {
-                setFollowing(res.data.following);
-                setFollowers(res.data.followers);
-            })
-            .catch(err => console.log(err));
+        userFollows()
     }, [props]);
 
     return (
-        <div>
+        <div className="informations">
+            <h1>{props.username}</h1>
             <nav>
                 <button onClick={() => {
                     setShowPublications(true)

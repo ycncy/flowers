@@ -11,11 +11,10 @@ export function Home() {
     const isLogged = authService.isLogged();
 
     if (isLogged) {
-        const loggedUser = authService.getToken();
         return (
             <div className="logged">
-                <Navbar token={loggedUser}/>
-                <MainPage token={loggedUser}/>
+                <Navbar/>
+                <MainPage/>
             </div>
         )
     }

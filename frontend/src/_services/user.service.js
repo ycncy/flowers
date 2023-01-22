@@ -4,8 +4,8 @@ let getAllUsers = () => {
     return Axios.get('/api/users/all-users')
 }
 
-let getUserByUsername = (username) => {
-    return Axios.get('/api/users/username/' + username)
+let getUserById = (_id) => {
+    return Axios.get('/api/users/id/' + _id)
 }
 
 let getUserByToken = (token) => {
@@ -27,7 +27,7 @@ let deleteUser = (user) => {
 
 export const userService = {
     getAllUsers,
-    getUserByUsername,
+    getUserById,
     getUserFollow,
     getUserByToken,
     updateUser,

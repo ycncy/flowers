@@ -24,12 +24,16 @@
 
 .post .buttons {
     display: flex;
-    justify-content: center;
+    justify-content: space-evenly;
     align-items: center;
     flex-direction: row;
 }
 
-.post .buttons button, .post .buttons a {
+.postForm {
+    height: 0;
+}
+
+.post .buttons button {
     cursor: pointer;
     background: none;
     border: none;

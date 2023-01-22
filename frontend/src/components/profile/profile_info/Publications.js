@@ -1,3 +1,5 @@
+import '../profileInformations.css'
+
 const Publications = (props) => {
 
     if (props.publications) {

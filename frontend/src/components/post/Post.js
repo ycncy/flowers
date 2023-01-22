@@ -1,20 +1,41 @@
 import './post.css'
+
+import Like from "../buttons/Like";
+import Comment from "../buttons/Comment";
+
+import {useContext, useEffect, useState} from "react";
+
+import {UidContext} from "../AppContext";
 import {postService} from "../../_services/post.service";
-import {userService} from "../../_services/user.service";
+import DisLike from "../buttons/DisLike";
 
 const Post = (props) => {
 
-    const handleLike = async () => {
-        await userService.getUserByToken(localStorage.getItem("token"))
-            .then(async res => {
-                const user = res.data.response._id;
+    const [postLikes, setPostLikes] = useState([]);
+    const [liked, setLiked] = useState();
 
-                await postService.addLike(props.post._id, user)
-                    .then(res => {
-                    })
-                    .catch(err => console.log(err))
-            })
+    const uid = useContext(UidContext);
+
+    const likes = async () => {
+        await postService.postLikes(props.post._id)
+            .then(res => setPostLikes(res.data.likes))
             .catch(err => console.log(err));
+    }
+
+    useEffect(() => {
+        likes();
+    }, [postLikes])
+
+    const handleLike = async () => {
+        if (postLikes.includes(uid)) {
+            await postService.deleteLikeFromPost(props.post._id, uid)
+                .then(() => setLiked(false))
+                .catch(err => console.log(err))
+        } else {
+            await postService.addLike(props.post._id, uid)
+                .then(() => setLiked(true))
+                .catch(err => console.log(err))
+        }
     }
 
     return (
@@ -25,11 +46,15 @@ const Post = (props) => {
                 <span>{props.post.description}</span>
             </div>
             <div className="buttons">
-                <a href={"/comments/" + props.post._id}>
-                    <img src={require("./postImages/comment.png")}/>
-                </a>
+                <form className="postForm"
+                      action={"/comments/" + props.post._id}>
+                    <button type="submit">
+                        <Comment/>
+                    </button>
+                </form>
                 <button onClick={handleLike}>
-                    <img src={require("./postImages/like.png")}/>
+                    {!liked && <Like/>}
+                    {liked && <DisLike/>}
                 </button>
             </div>
         </div>

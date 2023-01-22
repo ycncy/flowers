@@ -1,33 +1,38 @@
-import React, {useEffect, useState} from 'react';
-import {userService} from "../_services/user.service";
+import React, {useContext, useEffect, useState} from 'react';
 
 import '../css/mainpage.css'
+
+import {userService} from "../_services/user.service";
 import {postService} from "../_services/post.service";
+import {UidContext} from "../components/AppContext";
 import Post from "../components/post/Post";
 
-const MainPage = (props) => {
+const MainPage = () => {
 
-    const [username, setUsername] = useState('');
+    const uid = useContext(UidContext);
+
     const [following, setFollowing] = useState([]);
     const [followingPosts, setFollowingPosts] = useState([]);
 
-    useEffect(() => {
-        userService.getUserByToken(props.token)
-            .then(res => setUsername(res.data.response.username))
-            .catch(err => console.log(err));
-    }, [props.token]);
+    const fetchFollows = async (uid) => {
+        userService.getUserFollow(uid)
+            .then(res => {
+                setFollowing(res.data.following)
+            })
+            .catch(err => console.log(err))
+    }
 
     useEffect(() => {
-        if (username !== '') {
-            userService.getUserFollow(username)
-                .then(res => setFollowing(res.data.following))
-                .catch(err => console.log(err))
+        if (uid !== undefined) {
+            fetchFollows(uid)
         }
-    }, [username]);
+        setFollowingPosts([])
+    }, [uid]);
+
 
     useEffect(() => {
         if (following.length !== 0) {
-            following.forEach(user => {
+            following.forEach((user) => {
                 postService.userPosts(user)
                     .then(res => {
                         setFollowingPosts([...followingPosts, ...res.data])
@@ -37,29 +42,25 @@ const MainPage = (props) => {
         }
     }, [following])
 
-    const listPosts = [];
-    for (let i = 0; i < followingPosts.length; i++) {
-        listPosts.push(<Post key={i} post={followingPosts[0]}/>)
-    }
 
     if (following.length === 0) {
         return (
-            <div className="corps">
-                <h1>Vous n'êtes abonné à aucun compte</h1>
-            </div>
+            <h1 style={{textAlign: "center"}}>Vous n'êtes abonné à aucun
+                compte</h1>
         )
     }
+
     if (followingPosts.length === 0) {
         return (
-            <div className="corps">
-                <h1>Vos comptes suivis n'ont encore rien posté pour
-                    l'instant</h1>
-            </div>
+            <h1 style={{textAlign: "center"}}>Vos comptes suivis n'ont encore
+                rien posté pour l'instant</h1>
         );
     } else {
         return (
             <div className="corps">
-                {listPosts}
+                {followingPosts.map((post, index) => {
+                    return (<Post key={index} post={post}/>)
+                })}
             </div>
         )
     }

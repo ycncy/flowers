@@ -1,20 +1,31 @@
-import React, {useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import './navbar.css'
+
 import LogButtons from "../LogButtons";
+
 import {Link} from "react-router-dom";
 import {userService} from "../../_services/user.service";
+import {UidContext} from "../AppContext";
 
-const Navbar = (props) => {
+const Navbar = () => {
 
     const [username, setUsername] = useState();
 
-    useEffect(() => {
-        userService.getUserByToken(props.token)
+    const uid = useContext(UidContext);
+
+    const yo = async () => {
+        await userService.getUserById(uid)
             .then(res => {
-                setUsername(res.data.response.username)
+                setUsername(res.data)
             })
             .catch(err => console.log(err));
-    }, [props])
+    }
+
+    useEffect(() => {
+        if (uid !== undefined) {
+            yo();
+        }
+    }, [uid])
 
     return (
         <div className="nav">

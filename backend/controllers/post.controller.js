@@ -78,11 +78,11 @@ module.exports.addComment = async (req, res) => {
 
 module.exports.addLike = async (req, res) => {
     const {_id} = req.params;
-    const {liker_id} = req.body;
+    const {uid} = req.body;
 
     await postModel.findByIdAndUpdate(
         {_id},
-        {$addToSet: {likes: liker_id}},
+        {$addToSet: {likes: uid}},
         {new: true}
     ).then(response => res.status(201).json(response))
         .catch(err => res.status(400).json({err}))
@@ -115,11 +115,13 @@ module.exports.deleteComment = async (req, res) => {
 
 module.exports.deleteLike = async (req, res) => {
     const {_id} = req.params;
-    const {liker_id} = req.body;
+    const {uid} = req.body;
+
+    console.log(req.body)
 
     await postModel.findByIdAndUpdate(
         {_id},
-        {$pull: {likes: liker_id}},
+        {$pull: {likes: uid}},
         {new: true}
     )
         .then(response => res.status(201).json(response))

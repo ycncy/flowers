@@ -1,0 +1,31 @@
+.informations nav {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    width: 100%;
+    margin: auto;
+}
+
+.informations h1 {
+    text-align: center;
+}
+
+.informations {
+    width: 70%;
+    margin: auto;
+    text-align: center;
+}
+
+.informations nav button {
+    background: none;
+    color: white;
+    border: none;
+    width: 100%;
+    font-size: large;
+    padding: 1vh;
+}
+
+.informations nav button:hover {
+    background: rgba(122, 124, 128, 0.2);
+    cursor: pointer;
+}
