@@ -1,8 +1,9 @@
 .logged {
-    display: grid;
-    grid-template-columns: 1fr 4fr;
-    grid-gap: 50px;
+    display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     text-align: center;
+    width: 100%;
+    gap: 5vh;
 }

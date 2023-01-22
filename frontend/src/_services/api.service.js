@@ -7,7 +7,7 @@ const Axios = axios.create({
 
 Axios.interceptors.request.use(request => {
     if (authService.isLogged()) {
-        request.headers.Authorization = 'Bearer ' + authService.getToken()
+        request.headers.authorization = 'Bearer ' + authService.getToken();
     }
     return request
 })
@@ -16,7 +16,7 @@ Axios.interceptors.request.use(request => {
 Axios.interceptors.response.use(response => {
     return response
 }, error => {
-    if (error.response.status === 400) {
+    if (error.response.status === 401) {
         authService.logout()
         window.location = '/connexion/login'
     } else {

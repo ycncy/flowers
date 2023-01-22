@@ -7,7 +7,7 @@ import {userService} from "../../_services/user.service";
 
 const ProfileInformations = (props) => {
 
-    const [showPublications, setShowPublications] = useState(true);
+    const [showPublications, setShowPublications] = useState(false);
     const [showFollowers, setShowFollowers] = useState(false);
     const [showFollowing, setShowFollowing] = useState(false);
 
@@ -17,7 +17,9 @@ const ProfileInformations = (props) => {
 
     useEffect(() => {
         postService.userPosts(props.username)
-            .then(res => setPublications(res.data.posts))
+            .then(res => {
+                setPublications(res.data.posts)
+            })
             .catch(err => console.log(err));
     }, [props]);
 

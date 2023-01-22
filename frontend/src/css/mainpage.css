@@ -1,0 +1,10 @@
+.corps {
+    width: 70%;
+    border: solid #131313 2px;
+    background: #131313;
+    border-radius: 5px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 5vh;
+    padding: 2vh;
+}

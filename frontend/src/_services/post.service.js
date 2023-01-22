@@ -25,11 +25,11 @@ let updatePost = (_id, postDetail) => {
 }
 
 let addComment = (postId, commentId) => {
-    return Axios.post("/api/posts/comment/" + postId, commentId);
+    return Axios.post("/api/posts/comment/" + postId, {commentId});
 }
 
-let addLike = (postId, likerId) => {
-    return Axios.post("/api/posts/like/" + postId, likerId);
+let addLike = (postId, liker_id) => {
+    return Axios.post("/api/posts/like/" + postId, {liker_id});
 }
 
 let deletePost = (_id) => {

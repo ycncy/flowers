@@ -1,0 +1,37 @@
+.post {
+    padding: 1vh;
+    border-radius: 10px;
+    background: #171717;
+}
+
+.post .description {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    padding: 2vh;
+}
+
+.post img {
+    width: 80%;
+    border-radius: 10px;
+}
+
+.post a {
+    text-decoration: none;
+    color: white;
+    font-weight: bolder;
+}
+
+.post .buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+}
+
+.post .buttons button, .post .buttons a {
+    cursor: pointer;
+    background: none;
+    border: none;
+    filter: invert(100);
+}

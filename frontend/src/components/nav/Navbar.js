@@ -10,12 +10,14 @@ const Navbar = (props) => {
 
     useEffect(() => {
         userService.getUserByToken(props.token)
-            .then(res => setUsername(res.data.user.username))
+            .then(res => {
+                setUsername(res.data.response.username)
+            })
             .catch(err => console.log(err));
     }, [props])
 
     return (
-        <div>
+        <div className="nav">
             <nav>
                 <p>Flowers</p>
                 <a href="/">Accueil</a>
