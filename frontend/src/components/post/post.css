@@ -16,8 +16,7 @@
     border-radius: 10px;
 }
 
-.post a {
-    text-decoration: none;
+.post p {
     color: white;
     font-weight: bolder;
 }

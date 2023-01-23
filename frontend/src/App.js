@@ -11,27 +11,30 @@ import React from "react";
 import {userService} from "./_services/user.service";
 import {authService} from "./_services/auth.service";
 import {UidContext} from "./components/AppContext";
+import CreatePost from "./components/creation/CreatePost";
 
 function App() {
 
     const [uid, setUid] = useState();
 
-    const func = async () => {
-        await userService.getUserByToken(authService.getToken())
-            .then(res => setUid(res.data.response._id))
+    const func = () => {
+        userService.getUserByToken(authService.getToken())
+            .then(res => {
+                setUid(res.data.response._id)
+            })
             .catch(err => console.log(err))
     }
 
     useEffect(() => {
-        func().then(r => {
-        }).catch(err => console.log(err));
-    }, [])
+        func();
+    })
 
     return (
         <UidContext.Provider value={uid}>
             <BrowserRouter>
                 <Routes>
                     <Route exact path="/" element={<Home/>}></Route>
+                    <Route exact path="/create" element={<CreatePost/>}></Route>
                     <Route path="/profil/:username" element={
                         <Profile/>}></Route>
                     <Route path="/connexion/*" element={<AuthRouter/>}></Route>

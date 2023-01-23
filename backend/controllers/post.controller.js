@@ -24,8 +24,12 @@ module.exports.postDetail = async (req, res) => {
 module.exports.postsByUsername = async (req, res) => {
     const {username} = req.params;
 
+    console.log(username)
+
     postModel.find({author: username})
-        .then(response => res.status(201).json(response))
+        .then(response => {
+            res.status(201).json(response)
+        })
         .catch(err => res.status(400).json({err}))
 }
 

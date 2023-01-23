@@ -1,12 +1,13 @@
 import '../profileInformations.css'
+import Post from "../../post/Post";
 
 const Publications = (props) => {
 
-    if (props.publications) {
+    if (props.publications.length !== 0) {
         return (
-            <div>
+            <div className="publications">
                 {props.publications.map((post, index) => {
-                    return <p key={index}>{post.description}</p>
+                    return <Post key={index} post={post}/>
                 })}
             </div>
         );

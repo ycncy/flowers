@@ -1,14 +1,15 @@
 import '../profileInformations.css'
 
 import React from 'react';
+import FollowUser from "../FollowUser";
 
 const Followers = (props) => {
 
     if (props.followers.length !== 0) {
         return (
-            <div>
+            <div className="follow">
                 {props.followers.map((follower, index) => {
-                    return <p key={index}>{follower}</p>
+                    return <FollowUser key={index} id={follower}></FollowUser>
                 })}
             </div>
         );

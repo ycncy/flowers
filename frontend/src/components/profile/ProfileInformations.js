@@ -22,15 +22,15 @@ const ProfileInformations = (props) => {
 
     const uid = useContext(UidContext)
 
-    const userPosts = async () => {
-        await postService.userPosts(props.username)
+    const userPosts = () => {
+        postService.userPosts(uid)
             .then(res => {
-                setPublications(res.data.posts)
+                setPublications(res.data)
             })
             .catch(err => console.log(err));
     }
 
-    const userFollows = async () => {
+    const userFollows = () => {
         if (uid !== undefined) {
             userService.getUserFollow(uid)
                 .then(res => {
@@ -43,15 +43,15 @@ const ProfileInformations = (props) => {
 
     useEffect(() => {
         userPosts();
+        userFollows();
     }, [props]);
 
     useEffect(() => {
-        userFollows()
     }, [props]);
 
     return (
         <div className="informations">
-            <h1>{props.username}</h1>
+            <h1>{props.username.username}</h1>
             <nav>
                 <button onClick={() => {
                     setShowPublications(true)

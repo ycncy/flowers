@@ -5,7 +5,7 @@ import Navbar from "../components/nav/Navbar";
 
 export function Profile() {
 
-    const {username} = useParams();
+    const username = useParams();
 
     return (
         <div>

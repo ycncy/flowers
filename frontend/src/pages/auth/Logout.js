@@ -9,7 +9,7 @@ const Logout = () => {
     useEffect(() => {
         authService.logout();
         navigate('/');
-    })
+    }, [])
 
     return (
         <div>

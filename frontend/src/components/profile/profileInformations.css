@@ -29,3 +29,40 @@
     background: rgba(122, 124, 128, 0.2);
     cursor: pointer;
 }
+
+.publications {
+    margin: auto;
+    padding: 2vh;
+    display: grid;
+    justify-content: center;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2vh;
+}
+
+.publications:nth-child(n) {
+    width: 30%;
+}
+
+.follow {
+    padding: 2vh;
+    margin: auto;
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.userDetail {
+    border-bottom: #3f3f3f solid 2px;
+    display: flex;
+    padding: 2vh;
+    flex-direction: row;
+    align-items: center;
+    gap: 2vh;
+    width: 30%;
+}
+
+.userDetail img {
+    width: 50%;
+}

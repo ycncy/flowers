@@ -7,9 +7,9 @@ const Following = (props) => {
 
     if (props.following.length !== 0) {
         return (
-            <div>
+            <div className="follow">
                 {props.following.map((following, index) => {
-                    return <FollowUser key={index} username={following}/>
+                    return <FollowUser key={index} id={following}/>
                 })}
             </div>
         );

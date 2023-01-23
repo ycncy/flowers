@@ -1,11 +1,8 @@
 import React, {useState} from "react";
-import {useNavigate} from "react-router-dom";
 
 import {authService} from "../../_services/auth.service";
 
 const Login = () => {
-
-    let navigate = useNavigate();
 
     const [credentials, setCredentials] = useState({
         username: "",
@@ -25,7 +22,7 @@ const Login = () => {
         authService.login(credentials)
             .then(res => {
                     authService.saveToken(res.data.token);
-                    navigate("/");
+                window.location = '/';
                 }
             )
             .catch(err => console.log(err));

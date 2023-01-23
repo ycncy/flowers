@@ -14,8 +14,7 @@ const LogPage = () => {
             </div>
             <div className="buttons">
                 <Link className="link" to="/connexion/login">Se connecter</Link>
-                <Link className="link"
-                      to="/connexion/register">S'inscrire</Link>
+                <Link className="link" to="/connexion/register">S'inscrire</Link>
             </div>
         </div>
     );

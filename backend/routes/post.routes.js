@@ -13,7 +13,6 @@ router.get('/byusername/:username', postController.postsByUsername);
 router.get('/comments/:_id', postController.postComments);
 router.get('/likes/:_id', postController.postLikes);
 
-
 //********************** UPDATE **********************************************//
 
 router.patch('/:_id', restrain_access, postController.update);

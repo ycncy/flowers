@@ -135,7 +135,10 @@ module.exports.getUserById = async (req, res) => {
     const {_id} = req.params;
 
     await userModel.findOne({_id: _id})
-        .then(response => res.send(response.username))
+        .then(response => res.send({
+            username: response.username,
+            profil_pic_url: response.profil_pic_url
+        }))
         .catch(err => res.status(400).send({err}))
 }
 

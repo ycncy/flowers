@@ -21,6 +21,15 @@ form {
     gap: 1vh;
 }
 
+.group textarea {
+    width: 60vh;
+    height: 10vh;
+    border: none;
+    border-radius: 2vh;
+    padding: 2vh;
+    font-size: large;
+}
+
 .group input {
     width: 40vh;
     height: 5vh;
@@ -30,7 +39,7 @@ form {
     font-size: large;
 }
 
-.group input:focus-visible {
+.group input:focus-visible, .group textarea:focus-visible {
     outline: none;
     border: none;
     font-size: large;

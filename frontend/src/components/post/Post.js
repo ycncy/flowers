@@ -11,6 +11,8 @@ import DisLike from "../buttons/DisLike";
 
 const Post = (props) => {
 
+    console.log(props.post)
+
     const [postLikes, setPostLikes] = useState([]);
     const [liked, setLiked] = useState();
 
@@ -42,7 +44,7 @@ const Post = (props) => {
         <div className="post">
             <img src={require("./postImages/" + props.post.image_url)}/>
             <div className="description">
-                <a href={"/profil/" + props.post.author}>{props.post.author}</a>
+                <p>{props.post.author}</p>
                 <span>{props.post.description}</span>
             </div>
             <div className="buttons">

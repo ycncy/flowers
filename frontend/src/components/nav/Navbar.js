@@ -13,17 +13,13 @@ const Navbar = () => {
 
     const uid = useContext(UidContext);
 
-    const yo = async () => {
-        await userService.getUserById(uid)
-            .then(res => {
-                setUsername(res.data)
-            })
-            .catch(err => console.log(err));
-    }
-
     useEffect(() => {
         if (uid !== undefined) {
-            yo();
+            userService.getUserById(uid)
+                .then(res => {
+                    setUsername(res.data.username)
+                })
+                .catch(err => console.log(err));
         }
     }, [uid])
 
@@ -32,7 +28,7 @@ const Navbar = () => {
             <nav>
                 <p>Flowers</p>
                 <a href="/">Accueil</a>
-                <a href="/create">Créer</a>
+                <Link to="/create">Créer</Link>
                 <Link to={`/profil/${username}`}>Profil</Link>
                 <LogButtons/>
             </nav>
