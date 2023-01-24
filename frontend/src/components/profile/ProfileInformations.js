@@ -41,13 +41,8 @@ const ProfileInformations = (props) => {
         }
     }
 
-    useEffect(() => {
-        userPosts();
-        userFollows();
-    }, [props]);
-
-    useEffect(() => {
-    }, [props]);
+    userPosts();
+    userFollows();
 
     return (
         <div className="informations">

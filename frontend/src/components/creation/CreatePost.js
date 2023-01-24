@@ -1,6 +1,10 @@
 import React, {useState} from 'react';
+import {postService} from "../../_services/post.service";
+import {useParams} from "react-router-dom";
 
 const CreatePost = () => {
+
+    const uid = useParams()
 
     const [credentials, setCredentials] = useState({
         description: "",
@@ -14,9 +18,20 @@ const CreatePost = () => {
         })
     }
 
+    const createPost = (e) => {
+        e.preventDefault()
+        postService.create({
+            author: uid.uid,
+            description: credentials.description,
+            image_url: credentials.image_url
+        }).then(() => {
+            window.location = '/';
+        }).catch(err => console.log(err));
+    }
+
     return (
         <div className="createPost">
-            <form>
+            <form onSubmit={createPost}>
                 <h1>Créer un post</h1>
                 <div className="group">
                     <h3>Description</h3>

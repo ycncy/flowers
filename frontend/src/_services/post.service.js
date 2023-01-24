@@ -4,6 +4,10 @@ let create = (postDetail) => {
     return Axios.post("/api/posts/create", postDetail);
 }
 
+let allPosts = () => {
+    return Axios.get('/api/posts/get/all-posts');
+}
+
 let getById = (_id) => {
     return Axios.get("/api/posts/" + _id);
 }
@@ -45,6 +49,7 @@ let deleteLikeFromPost = (postId, uid) => {
 }
 
 export const postService = {
+    allPosts,
     create,
     getById,
     userPosts,

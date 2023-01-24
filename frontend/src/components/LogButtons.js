@@ -1,8 +1,6 @@
 import React from 'react';
 import {authService} from "../_services/auth.service";
 
-import Logout from '../images/logout.png'
-
 const LogButtons = () => {
 
     const isLogged = authService.isLogged();

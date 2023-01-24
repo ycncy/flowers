@@ -21,7 +21,7 @@ const Login = () => {
         if (authService.isLogged()) authService.logout();
         authService.login(credentials)
             .then(res => {
-                    authService.saveToken(res.data.token);
+                authService.saveToken(res.data.token);
                 window.location = '/';
                 }
             )

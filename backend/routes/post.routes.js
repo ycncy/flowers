@@ -9,6 +9,7 @@ router.post('/create', restrain_access, postController.create);
 //********************** READ ************************************************//
 
 router.get('/:_id', postController.postDetail);
+router.get('/get/all-posts', postController.allPosts);
 router.get('/byusername/:username', postController.postsByUsername);
 router.get('/comments/:_id', postController.postComments);
 router.get('/likes/:_id', postController.postLikes);

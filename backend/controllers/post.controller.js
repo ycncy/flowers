@@ -5,12 +5,20 @@ const postModel = require('../models/post.model');
 module.exports.create = async (req, res) => {
     const {image_url, author, description} = req.body;
 
+    console.log(req.body)
+
     await postModel.create({image_url, author, description})
         .then(response => res.status(201).json(response))
         .catch(err => res.status(400).json({err}))
 }
 
 //********************** READ ************************************************//
+
+module.exports.allPosts = async (req, res) => {
+    await postModel.find()
+        .then(response => res.status(201).json({response}))
+        .catch(err => res.status(400).json({err}));
+}
 
 module.exports.postDetail = async (req, res) => {
     const {_id} = req.params;
@@ -23,8 +31,6 @@ module.exports.postDetail = async (req, res) => {
 //Renvoie tous les posts d'un utilisateur
 module.exports.postsByUsername = async (req, res) => {
     const {username} = req.params;
-
-    console.log(username)
 
     postModel.find({author: username})
         .then(response => {
@@ -120,8 +126,6 @@ module.exports.deleteComment = async (req, res) => {
 module.exports.deleteLike = async (req, res) => {
     const {_id} = req.params;
     const {uid} = req.body;
-
-    console.log(req.body)
 
     await postModel.findByIdAndUpdate(
         {_id},

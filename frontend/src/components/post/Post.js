@@ -11,30 +11,28 @@ import DisLike from "../buttons/DisLike";
 
 const Post = (props) => {
 
-    console.log(props.post)
-
     const [postLikes, setPostLikes] = useState([]);
     const [liked, setLiked] = useState();
 
     const uid = useContext(UidContext);
 
-    const likes = async () => {
-        await postService.postLikes(props.post._id)
+    useEffect(() => {
+        postService.postLikes(props.post._id)
             .then(res => setPostLikes(res.data.likes))
             .catch(err => console.log(err));
-    }
+    }, [liked])
 
     useEffect(() => {
-        likes();
-    }, [postLikes])
+        if (postLikes.includes(uid)) setLiked(true);
+    });
 
-    const handleLike = async () => {
+    const handleLike = () => {
         if (postLikes.includes(uid)) {
-            await postService.deleteLikeFromPost(props.post._id, uid)
+            postService.deleteLikeFromPost(props.post._id, uid)
                 .then(() => setLiked(false))
                 .catch(err => console.log(err))
         } else {
-            await postService.addLike(props.post._id, uid)
+            postService.addLike(props.post._id, uid)
                 .then(() => setLiked(true))
                 .catch(err => console.log(err))
         }
@@ -42,7 +40,7 @@ const Post = (props) => {
 
     return (
         <div className="post">
-            <img src={require("./postImages/" + props.post.image_url)}/>
+            <img src={require("./postImages/" + props.post.image_url)} alt={"postImage"}/>
             <div className="description">
                 <p>{props.post.author}</p>
                 <span>{props.post.description}</span>
@@ -55,7 +53,7 @@ const Post = (props) => {
                     </button>
                 </form>
                 <button onClick={handleLike}>
-                    {!liked && <Like/>}
+                    {!liked && <Like likes={postLikes.length}/>}
                     {liked && <DisLike/>}
                 </button>
             </div>
